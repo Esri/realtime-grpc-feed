@@ -1,0 +1,1 @@
+The client libraries in this directory were generated using the protocol buffers compiler protoc.exe. More info about protocol buffers, protoc.exe and the process of creating gRPC client libraries from a .proto file can be found here: https://developers.google.com/protocol-buffers/docs/overview
