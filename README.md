@@ -1,4 +1,4 @@
-# velocity-grpc-client
+# grpc-feed-client
 
 This repo contains resources for developers interested in creating clients to gRPC feeds in ArcGIS Velocity. Click here for more information on [ArcGIS Velocity]( https://www.esri.com/en-us/arcgis/products/arcgis-velocity/resources). In order to leverage gRPC feeds in Velocity you must first create the feed which will provide values required when developing the client.
 
@@ -50,5 +50,5 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-A copy of the license is available in the repository's [license.txt]( https://github.com/kengorton/velocity-grpc-client/blob/main/License.txt) file.
+A copy of the license is available in the repository's [license.txt]( https://github.com/kengorton/grpc-feed-client/blob/main/License.txt) file.
 
