@@ -13,7 +13,7 @@ This repo contains resources for developers interested in creating clients to gR
 1. Download the precompiled libraries for the language of your gRPC client. 
 2. Reference them appropriately in your client codebase.
 3. Make use of the reference imlementations available in this repo for guidance when creating your own clients.
-4. Alternatively, instead of using the provided precompiled libraries, create your own by downloading the `velocity_grpc.proto` file and compilit it using the protocol buffer compiler. Use the resulting client libraries in your client codebase.
+4. Alternatively, instead of using the provided precompiled libraries, create your own by downloading the `velocity_grpc.proto` file and compiling it it using the protocol buffer compiler. Use the resulting client libraries in your client codebase.
 
 ## Requirements
 
