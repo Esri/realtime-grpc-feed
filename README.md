@@ -20,13 +20,10 @@ you don't need this if you use the precompiled libraries for your environment. H
 
 --------
 
-# quickstart-map-js
+# velocity-grpc-client
 
 Here are a set of simple samples that show you how to accomplish different mapping and GIS tasks with the ArcGIS API for Javascript. The samples use ArcGIS Online basemaps and services.  Learn more [here](http://www.arcgis.com/about/).
 
-[View it live](http://edn1.esri.com/quickstart-map-js/)
-
-![App](https://raw.github.com/Esri/quickstart-map-js/master/quickstart-map-js.png)
 
 ## Features
 * Basemaps - Set different basemaps interactively
