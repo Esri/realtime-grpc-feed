@@ -1,51 +1,30 @@
 # velocity-grpc-client
-Developers, follow these instructions to get going:
 
-
-
-in this repo are: 
-
-### libs:
-language-specific libraries compiled from the velocity_grpc.proto file, below, for use in your grpc client code.
-
-
-
-### samples: 
-sample code illustrating how to leverage the precompiled libraries, above, in your client code.
-
-
-
-### velocity_grpc.proto: 
-you don't need this if you use the precompiled libraries for your environment. However, if you really want it so you can create files identical to our precompiled libraries (see libs, above) feel free...
-
---------
-
-# velocity-grpc-client
-
-Here are a set of simple samples that show you how to accomplish different mapping and GIS tasks with the ArcGIS API for Javascript. The samples use ArcGIS Online basemaps and services.  Learn more [here](http://www.arcgis.com/about/).
+This repo contains resources for developers interested in creating clients to gRPC feeds in ArcGIS Velocity. Click here for more information on [ArcGIS Velocity]( https://www.esri.com/en-us/arcgis/products/arcgis-velocity/resources). In order to leverage gRPC feeds in Velocity you must first create the feed which will provide values required when developing the client.
 
 
 ## Features
-* Basemaps - Set different basemaps interactively
-* Geolocation - Find and display your geolocation
-* Place Finding - Find places or geocode an address
-* Directions - Get directions
-* Graphics - Draw points, lines and polygons
-* Cloud - Draw and query features stored in the ArcGIS Online cloud
+* precompiled client libraries - The `libs` folder contains precompiled libraries generated from the velocity_grpc.proto file compiled into each language using the protocol buffer compiler. Download the libraries for the language of your client and reference them in your code. They will provide the necessary classes to enable the client to communicate with a Velocity gRPC feed service. We created these to remove the requirement for most developers to install nd use the protocol buffer compiler in their own environments.
+* Reference implementations - The `samples` folder contains example reference implementations in various languages that illustrate how to communicate with Velocity gRPC feed services.
+* velocity_grpc.proto - This file is used by developers who do not wish to use the precompiled libraries available in this repo. Use this file with the protocol buffer compiler to generate the necessary client libraries. Click here for more information on [protocol buffers and the use of the protocol buffer compiler]( https://developers.google.com/protocol-buffers).
 
 ## Instructions
 
-1. Fork and then clone the repo. 
-2. Run and try the samples.
+1. Download the precompiled libraries for the language of your gRPC client. 
+2. Reference them appropriately in your client codebase.
+3. Make use of the reference imlementations available in this repo for guidance when creating your own clients.
+4. Alternatively, instead of using the provided precompiled libraries, create your own by downloading the `velocity_grpc.proto` file and compilit it using the protocol buffer compiler. Use the resulting client libraries in your client codebase.
 
 ## Requirements
 
-* Notepad or your favorite HTML editor
-* Web browser with access to the Internet
+* IDE appropriate for your development scenario
 
 ## Resources
 
-* [ArcGIS for JavaScript API Resource Center](http://help.arcgis.com/en/webapi/javascript/arcgis/index.html)
+* [ArcGIS Velocity](https://www.esri.com/en-us/arcgis/products/arcgis-velocity/resources)
+* [ArcGIS Velocity gRPC feeds](https://doc.arcgis.com/en/iot/ingest/grpc.htm)
+* [gRPC](https://grpc.io/)
+* [Protocol Buffers](https://developers.google.com/protocol-buffers)
 * [ArcGIS Blog](http://blogs.esri.com/esri/arcgis/)
 * [twitter@esri](http://twitter.com/esri)
 
