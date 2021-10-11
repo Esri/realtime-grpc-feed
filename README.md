@@ -1,11 +1,11 @@
-# grpc-feed-client
+# realtime-grpc-feed
 
 This repo contains resources for developers interested in creating clients to gRPC feeds in ArcGIS Velocity. Click here for more information on [ArcGIS Velocity]( https://www.esri.com/en-us/arcgis/products/arcgis-velocity/resources). In order to leverage gRPC feeds in Velocity you must first create the feed which will provide values required when developing the client.
 
 
 ## Features
 
-* precompiled client libraries - The `libs` folder contains precompiled libraries generated from the velocity_grpc.proto file compiled into each language using the protocol buffer compiler. Download the libraries for the language of your client and reference them in your code. They will provide the necessary classes to enable the client to communicate with a Velocity gRPC feed service. We created these libraries as a convenience so that most developers will not need to install and use the protocol buffer compiler in their own environments.
+* precompiled client libraries - The `libs` folder contains precompiled libraries generated from the velocity_grpc.proto file compiled into each language using the protocol buffer compiler. Download the libraries for the language of your client and reference them in your code. They will provide the necessary classes to enable the client to send messages to a Velocity gRPC feed service. We created these libraries as a convenience so that most developers will not need to install and use the protocol buffer compiler in their own environments.
 * Reference implementations - The `samples` folder contains example reference implementations in various languages that illustrate how to prepare and send messages to Velocity gRPC feed services.
 * velocity_grpc.proto - This file is used by developers who do not wish to use the precompiled libraries available in this repo. Use this file with the protocol buffer compiler to generate the necessary client libraries. Click here for more information on [protocol buffers and the use of the protocol buffer compiler]( https://developers.google.com/protocol-buffers).
 
@@ -18,6 +18,7 @@ This repo contains resources for developers interested in creating clients to gR
 
 ## Requirements
 
+* Subscription to ArcGIS Velocity
 * IDE appropriate for your development scenario
 
 ## Resources
