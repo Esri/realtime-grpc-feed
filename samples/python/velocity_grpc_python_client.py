@@ -1,7 +1,7 @@
 '''
 This script implements a gRPC client in Python. 
 Before sending data using this client, a gRPC feed needs to be created on Velocity. 
-The schema of the feed should match exactly the schema of the data sent through this client. 
+The schema of the feed (data types & order) should match exactly the schema of the data sent from this client. 
 The gRPC endpoint header path used in this script will be available on the details page after the feed is created. 
 '''
 import grpc
@@ -13,14 +13,15 @@ import logging
 
 def send_velocity_features(stub):
     '''
-    Define a function to send a request to the gRPC server, which is the gRPC feed created on Velocity
+    Define a function to create a request and send it to the gRPC feed created on Velocity
+    This request contains one feature with three attributes 
     '''
     # create a list that contains the attributes of the event 
     # make sure the attributes are wrapped to match the data types listed in the schema on Velocity feed
     attributes = [
         wrappers.FloatValue(value=37.592424978605884),
         wrappers.FloatValue(value=-92.76911615610153),
-        wrappers.StringValue(value='test_loc_1')
+        wrappers.StringValue(value='test_loc_0')
         ]
     
     # create a message of Any message type 
@@ -38,7 +39,7 @@ def send_velocity_features(stub):
     # specify the gRPC endpoint header path that can be found on the details page of the created feed on Velocity
     metadata = (('grpc-path', 'a4iotdev.978868e6b2254f579fa95baa35fbc431'),)
 
-    # create a request containing the feature we created
+    # send the request containing the feature we created
     res = stub.send(request = velocity_grpc_pb2.Request(features=[test_feature]), metadata=metadata)
 
     return res
@@ -54,12 +55,12 @@ def run():
 
     # create the channel using the gRPC endpoint URL
     with grpc.secure_channel('a4iot-a4iotdev-c2.westus2.cloudapp.azure.com', creds) as channel:
-        # create a stub using the channel
+        # create a stub with the channel
         stub = velocity_grpc_pb2_grpc.GrpcFeedStub(channel)
         # send the request via the stub 
         response = send_velocity_features(stub)
         # print out the response 
-        print(response)
+        logging.info(response)
 
 
 if __name__ == '__main__':
