@@ -1,22 +1,20 @@
-from __future__ import print_function
-
-import logging
-from google.protobuf.any_pb2 import Any
-
 import grpc
 import velocity_grpc_pb2
 import velocity_grpc_pb2_grpc
+from google.protobuf.any_pb2 import Any
 from google.protobuf import wrappers_pb2 as wrappers
-
+import logging
 
 def send_velocity_features(stub):
-
-    # create a list that contains only one event to send to Velocity
+    '''
+    Define a function to send a request to the gRPC server, which is the gRPC feed created on Velocity
+    '''
+    # create a list that contains the attributes of the event 
     # make sure the attributes are wrapped to match the data types listed in the schema on Velocity feed
-    events = [
-        wrappers.Int64Value(value=37592424978605884),
-        wrappers.Int64Value(value=-9276911615610153),
-        wrappers.StringValue(value='test_loc_0')
+    attributes = [
+        wrappers.FloatValue(value=37.592424978605884),
+        wrappers.FloatValue(value=-92.76911615610153),
+        wrappers.StringValue(value='test_loc_1')
         ]
     
     # create a message of Any message type 
@@ -24,11 +22,11 @@ def send_velocity_features(stub):
     # create a feature 
     test_feature = velocity_grpc_pb2.Feature()
 
-    # loop through the list of events 
-    for event in events:
-        # pack the event 
-        any.Pack(event)
-        # append the event to the empty feature so we now have a feature to send 
+    # loop through the list of attributes
+    for attri in attributes:
+        # pack the attribute into the message 
+        any.Pack(attri)
+        # append the message to the empty feature so we now have a feature to send 
         test_feature.attributes.append(any)
 
     # specify the gRPC endpoint header path that can be found on the details page of the created feed on Velocity
@@ -42,6 +40,7 @@ def send_velocity_features(stub):
 def run():
 
     # read the root certificate from file
+    # the certificate can be obtained from https://letsencrypt.org/certificates/
     with open('ISRG Root X1.pem', 'rb') as f:
         trusted_certs = f.read()
     # create credentials for the channel based on the root certificate 
