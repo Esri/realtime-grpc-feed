@@ -1,3 +1,9 @@
+'''
+This script implements a gRPC client in Python. 
+Before sending data using this client, a gRPC feed needs to be created on Velocity. 
+The schema of the feed should match exactly the schema of the data sent through this client. 
+The gRPC endpoint header path used in this script will be available on the details page after the feed is created. 
+'''
 import grpc
 import velocity_grpc_pb2
 import velocity_grpc_pb2_grpc
