@@ -13,6 +13,8 @@ from google.protobuf import wrappers_pb2 as wrappers
 import logging
 import time
 
+logging.basicConfig(level=logging.DEBUG)
+
 SCHEMA = ['Float64', 'Float64', 'String']
 PATH_TO_CER = 'ISRG Root X1.pem'
 SERVER_URL = 'a4iot-a4iotdev-c2.westus2.cloudapp.azure.com'
@@ -87,29 +89,46 @@ def send_blocking(stub, metadata, features):
     # send the request containing the feature we created
     for feature in features:
         res = stub.send(request = velocity_grpc_pb2.Request(features=[feature]), metadata=metadata)
-        # print out the response 
+        # print out the response '
         logging.info(res)
 
 def process_async_responses(future):
+    '''
+    This function is called whenever a response has been received for an asychronous request
+    It logs out the result of the request 
+    '''
     # log the result of an asynchronous request
     print(future.result())
 
 def send_asynchronous(stub, metadata, features):
+    '''
+    Send asynchronous requests 
+    Each request contains one feature
+    '''
     futures = []
     # loop through all features
-    for feature in features:
-        # send each feature via an asynchronous request 
-        # this is non-blocking 
-        call_future = stub.send.future(request = velocity_grpc_pb2.Request(features=[feature]), metadata=metadata)
+    for i in range(0, 100):
+        for feature in features:
+            logging.info(feature)
+            # send each feature via an asynchronous request 
+            # this is non-blocking 
+            call_future = stub.send.future(request = velocity_grpc_pb2.Request(features=[feature]), metadata=metadata)
 
-        call_future.add_done_callback(process_async_responses)
+            call_future.add_done_callback(process_async_responses)
 
-        futures.append(call_future)
+            futures.append(call_future)
 
     return futures 
 
-
-
+def stream_blocking(stub, metadata, features):
+    '''
+    Send streaming, blocking requests 
+    Each request contains one feature 
+    '''
+    req_list = [velocity_grpc_pb2.Request(features=[feature]) for feature in features]
+    res = stub.stream(request_iterator=req_list.__iter__(), metadata=metadata)
+    # print out the response '
+    logging.info(res)
 
 def main():
         data = data_collection()
@@ -130,19 +149,22 @@ def main():
         #send_blocking(stub=stub, metadata=metadata,features=features)
 
         # send the features to Velocity via asynchronous requests 
-        futures = send_asynchronous(stub=stub, metadata=metadata,features=features)
+        #futures = send_asynchronous(stub=stub, metadata=metadata,features=features)
+
+        # stream the features to Velocity with one feature in each request
+        stream_blocking(stub=stub, metadata=metadata, features=features)
         
-        futures_completed = False 
+        """ futures_completed = False 
         
         while futures_completed != True:
-            time.sleep(10)
             futures_completed = True
             for future in futures:
                 if future.done():
                     continue
                 else: 
                     futures_completed = False
-                    print("Requests still not completed")
+                    print("Requests still not completed. Sleeping for 10 seconds before resuming.")
+                    time.sleep(10) """
 
 if __name__ == '__main__':
     logging.basicConfig()
