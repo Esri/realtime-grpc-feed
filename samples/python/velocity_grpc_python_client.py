@@ -27,7 +27,6 @@ import velocity_grpc_pb2_grpc
 from google.protobuf.any_pb2 import Any
 from google.protobuf import wrappers_pb2 as wrappers
 import logging
-import time
 
 logging.basicConfig(level=logging.DEBUG)
 
