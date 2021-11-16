@@ -140,6 +140,16 @@ public class GRPCExample implements IGRPCExample
   }
 
   /**
+   * Checks to be sure credentials are available
+   * 
+   * @return True if credentials are present, false otherwise
+   */
+  private boolean hasCredentials()
+  {
+    return (TOKEN_USERNAME != null && !TOKEN_USERNAME.isEmpty() && TOKEN_PASSWORD != null && !TOKEN_PASSWORD.isEmpty());
+  }
+
+  /**
    * Uses the credentials provided in the gRPC Example interface to retrieve an access token from the ArcGIS Online
    * organization. The token's age is also maintained in the interface.
    * 
@@ -151,6 +161,8 @@ public class GRPCExample implements IGRPCExample
    */
   protected String getToken()
   {
+    if (hasCredentials())
+    {
     setupTokenExpiration();
 
     if (token == null)
@@ -217,6 +229,7 @@ public class GRPCExample implements IGRPCExample
       catch (Exception e)
       {
         System.out.println("Error retrieving token: " + e);
+        }
       }
     }
     return token;

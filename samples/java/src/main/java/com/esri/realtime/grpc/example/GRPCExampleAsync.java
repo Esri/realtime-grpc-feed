@@ -1,5 +1,7 @@
 package com.esri.realtime.grpc.example;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -27,7 +29,7 @@ public class GRPCExampleAsync extends GRPCExample
    */
   public GRPCExampleAsync()
   {
-    asyncStub = MetadataUtils.attachHeaders(GrpcFeedGrpc.newStub(getChannel()), getMetadata());
+    asyncStub = GrpcFeedGrpc.newStub(getChannel()).withInterceptors(MetadataUtils.newAttachHeadersInterceptor(getMetadata()));
   }
 
   /**
@@ -43,6 +45,32 @@ public class GRPCExampleAsync extends GRPCExample
     if (requestStream != null)
     {
       Request request = makeRequest(new Feature[] { GPSRadio.asFeature(gpsRadioMessage) });
+      requestStream.onNext(request);
+    }
+    else
+    {
+      System.out.println("ERROR: Stream not started");
+    }
+  }
+
+  /**
+   * Opens a stream if a stream is not already open and sends a single message.
+   * 
+   * @param gpsRadioMessage
+   *          the business object (event) to send
+   * @throws InterruptedException
+   */
+  public void sendMessage(GPSRadio[] gpsRadioMessageArray) throws InterruptedException
+  {
+    openStream();
+    if (requestStream != null)
+    {
+      List<Feature> featureList = new ArrayList<Feature>();
+      for (GPSRadio gpsRadioMessage : gpsRadioMessageArray)
+      {
+        featureList.add(GPSRadio.asFeature(gpsRadioMessage));
+      }
+      Request request = makeRequest(featureList.toArray(new Feature[featureList.size()]));
       requestStream.onNext(request);
     }
     else
@@ -114,21 +142,39 @@ public class GRPCExampleAsync extends GRPCExample
    *          not used
    * @throws InterruptedException
    */
+  @SuppressWarnings("unused")
   public static void main(String[] args) throws InterruptedException
   {
     GRPCExampleAsync asynchronousExample = new GRPCExampleAsync();
 
     // Send messages over the stream
     System.out.println("Streaming " + NUM_MSGS + " messages...");
+    List<GPSRadio> gpsRadioMessageList = new ArrayList<GPSRadio>();
     for (int msgNum = 0; msgNum < NUM_MSGS; msgNum++)
     {
       System.out.println(msgNum + ": Streaming message...");
 
       GPSRadio gpsRadioMessage = GPSRadio.getRandom();
+      if (NUM_REQUEST_FEATURES <= 1)
+      {
+        // Sending one message for each request
       asynchronousExample.sendMessage(gpsRadioMessage);
 
       // TODO: this is to limit back pressure to avoid OOMkilled. Use flow control for higher velocity.
-      Thread.sleep(SLEEP_TIMEOUT / 10);
+        Thread.sleep(SLEEP_TIMEOUT);
+      }
+      else
+      {
+        // sending many messages in an array with each request
+        gpsRadioMessageList.add(gpsRadioMessage);
+        if (gpsRadioMessageList.size() >= NUM_REQUEST_FEATURES)
+        {
+          asynchronousExample.sendMessage(gpsRadioMessageList.toArray(new GPSRadio[gpsRadioMessageList.size()]));
+          gpsRadioMessageList.clear();
+          // TODO: this is to limit back pressure to avoid OOMkilled. Use flow control for higher velocity.
+          Thread.sleep(SLEEP_TIMEOUT);
+        }
+      }
     }
     System.out.println("Done Streaming " + NUM_MSGS + " messages");
 

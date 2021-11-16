@@ -22,11 +22,11 @@ public class GRPCExampleSync extends GRPCExample
    */
   public GRPCExampleSync()
   {
-    blockingStub = MetadataUtils.attachHeaders(GrpcFeedGrpc.newBlockingStub(getChannel()), getMetadata());
+    blockingStub = GrpcFeedGrpc.newBlockingStub(getChannel()).withInterceptors(MetadataUtils.newAttachHeadersInterceptor(getMetadata()));
   }
 
   /**
-   * Sends a single messge and waits (blocks) for the response
+   * Sends a single message and waits (blocks) for the response
    * 
    * @param gpsRadioMessage
    *          The message to send
