@@ -1,0 +1,19 @@
+{
+	"deviceID": "imei:123456789012345",
+	"alias": "Tracker 1 for Demo",
+	"email": "imei123456789012345@demo.net",
+	"event": "beacon",
+	"priority": "Low",
+	"latitude": 38.8870516,
+	"longitude": -104.7625066,
+	"altitudeInMeters": 2793,
+	"speedInKmph": 0.1,
+	"headingInDegrees": 254,
+	"satellites": 12,
+	"accuracyM": 12.5,
+	"SignalStrengthDbms": -72.4,
+	"fixTimeUnix": 1632250584011,
+	"eventTimeUnix": 1632250584011,
+	"isEmergency": false,
+	"isPoweredOn": true
+}
