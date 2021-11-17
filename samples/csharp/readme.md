@@ -1,7 +1,7 @@
 # velocity-grpc-csharp-examples
-ArcGIS Velocity gRPC Feed Examples in c#
+ArcGIS Velocity gRPC Feed Examples in C#
 
-This code sample illustrates creating c# clients for ArcGIS Velocity gRPC feeds.
+This code sample illustrates creating C# clients for ArcGIS Velocity gRPC feeds.
 
 Additional documentation can be found [here](https://github.com/Esri/realtime-grpc-feed/blob/main/ArcGIS%20Velocity%20gRPC%20Client%20Developer%20Guide.pdf).
 
