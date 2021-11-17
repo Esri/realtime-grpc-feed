@@ -24,11 +24,10 @@ using Newtonsoft.Json.Linq;
 //Velocity gRPC feed connection values; get these from the item details page of the Velocity feed after it has been created
 
 //gRPC endpoint URL:
-//string gRPC_endpoint_URL = "us-iotdev.arcgis.com";
-string gRPC_endpoint_URL = "a4iot-a4iotdev-c2.westus2.cloudapp.azure.com";
+string gRPC_endpoint_URL = "";
 
 //gRPC endpoint header path	
-string gRPC_endpoint_header_path = "a4iotdev.ebd542be30124e01a4b4cb2917656db6";
+string gRPC_endpoint_header_path = "";
 
 //Authentication type
 AuthType auth_type = AuthType.None;
