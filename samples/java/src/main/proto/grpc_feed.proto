@@ -1,4 +1,5 @@
 syntax = "proto3";
+package esri.realtime.core.grpc;
 
 import "google/protobuf/any.proto";
 
