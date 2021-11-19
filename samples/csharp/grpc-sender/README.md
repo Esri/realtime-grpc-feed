@@ -4,7 +4,7 @@ This is a C# .Net console application to send data from a delimited text file to
 
 ## Features
 * Use grpc-sender to send records from your delimited data file as event messages to a gRPC endpoint via unary or streaming requests. 
-* Provides a source of messages for your Velocity demos.
+* Provides a source of messages for your Velocity gRPC feed.
 
 ## Instructions
 
