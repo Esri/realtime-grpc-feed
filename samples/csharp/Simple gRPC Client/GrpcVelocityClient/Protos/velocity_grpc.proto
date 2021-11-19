@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+import "google/protobuf/any.proto";
+
+option java_multiple_files = true;
+option java_package = "com.esri.realtime.core.grpc";
+option java_outer_classname = "GrpcProto";
+option csharp_namespace = "GrpcProto";
+
+service GrpcFeed {
+  // client streaming rpc for high velocity
+  rpc stream(stream Request) returns (Response);
+   // simple rpc for lower velocity
+  rpc send(Request) returns (Response);
+}
+
+// main api methods
+message Request {
+  repeated Feature features = 1;
+}
+
+message Feature {
+  repeated google.protobuf.Any attributes = 1;
+}
+
+message Response {
+  string message = 1;
+  int32 code = 2;
+}
