@@ -5,6 +5,7 @@ import "google/protobuf/any.proto";
 option java_multiple_files = true;
 option java_package = "com.esri.realtime.core.grpc";
 option java_outer_classname = "GrpcProto";
+option csharp_namespace = "Esri.Realtime.Core.Grpc";
 
 service GrpcFeed {
   // client streaming rpc for high velocity
