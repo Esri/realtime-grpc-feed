@@ -28,7 +28,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Grpc.Net.Client;
-using GrpcProto;
+using Esri.Realtime.Core.Grpc;
 using Google.Protobuf.WellKnownTypes;
 
 namespace gRPC_Sender
