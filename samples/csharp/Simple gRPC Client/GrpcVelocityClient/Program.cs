@@ -14,7 +14,7 @@
  */
 
 using Grpc.Net.Client;
-using GrpcProto;
+using Esri.Realtime.Core.Grpc;
 using Google.Protobuf.WellKnownTypes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
