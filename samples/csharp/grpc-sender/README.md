@@ -1,5 +1,5 @@
 # grpc-sender
-This is a C# .Net console application to send data from a delimited text file to a gRPC endpoint using unary or streaming requests. Publish this console app to your Azure portal to create a continuously running source of messages to your gRPC feed to support demos of Velocity.
+This is a C# .Net console application to send data from a delimited text file to a gRPC endpoint using unary or streaming requests. Publish this console app to your Azure portal to create a continuously running source of messages to your Velocity gRPC feed.
 
 
 ## Features
