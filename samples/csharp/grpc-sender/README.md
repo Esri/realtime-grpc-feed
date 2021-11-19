@@ -35,7 +35,7 @@ This is a C# .Net console application to send data from a delimited text file to
 6. In the resulting App Service, configure the deployment source to be LocalGit.
 7. Deploy to Web App.
 
-Detailed instructions are in the "Deploy grpc-sender to Azure App Service using Visual Studio Code .docx" file in this repo.
+Detailed instructions are in the "Deploy grpc-sender to Azure App Service using Visual Studio Code .pdf" file in this repo.
 
 ## Requirements
 
