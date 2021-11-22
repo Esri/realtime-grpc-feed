@@ -58,9 +58,6 @@ namespace gRPC_Sender
         
         static async Task Main()
         {
-            Console.WriteLine("Starting...");
-            
-            
 
             Grpc.Core.AsyncClientStreamingCall<Request, Response> call = null;
             Request request = new Request();            
@@ -229,10 +226,6 @@ namespace gRPC_Sender
                 Console.WriteLine(e.StackTrace);
                 Console.WriteLine(e.Data);
             }
-            finally{
-                await call.RequestStream.CompleteAsync();
-                response = await call;
-            }
         }
 
         static string[] readFile(){
@@ -279,7 +272,7 @@ namespace gRPC_Sender
                     { "client", "referer" },
                     { "referer", "http://localhost:8888"},
                     { "f", "json"},
-                    { "expiration", "1"}
+                    { "expiration", "21600"}
                 };
                 
                 var content = new FormUrlEncodedContent(values);
