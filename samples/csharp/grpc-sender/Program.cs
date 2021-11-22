@@ -54,10 +54,12 @@ namespace gRPC_Sender
         private static CultureInfo dateCulture = CultureInfo.CreateSpecificCulture(ConfigurationManager.AppSettings["dateCulture"]);
         private static long iterationLimit = Int64.Parse(ConfigurationManager.AppSettings["iterationLimit"]);
 
-        //private static readonly HttpClient httpClient = new HttpClient();
-        
+        private const int EXPIRY = 21600; //the token expiry in minutes, when using ArcGIS authentication
+
+                
         static async Task Main()
-        {
+        {           
+            
 
             Grpc.Core.AsyncClientStreamingCall<Request, Response> call = null;
             Request request = new Request();            
@@ -200,9 +202,10 @@ namespace gRPC_Sender
                                     response = await grpcClient.sendAsync(request, metadata);      
                                  }
                             }
-                            catch (Exception ex){
-                                Console.WriteLine($"Response from gRPC feed: {response.Message}");
-                                Console.WriteLine(ex.Message);
+                            catch (Exception e){
+                                Console.WriteLine(e.Message);
+                                Console.WriteLine(e.StackTrace);
+                                Console.WriteLine(e.Data);
                             }
                             finally{
                                 request.Features.Clear();
@@ -225,6 +228,13 @@ namespace gRPC_Sender
                 Console.WriteLine(e.Message);
                 Console.WriteLine(e.StackTrace);
                 Console.WriteLine(e.Data);
+            }
+            finally{
+                if (streamData){
+                    await call.RequestStream.CompleteAsync();
+                    response = await call;
+                }
+                Console.WriteLine($"Completed. {totalFeaturesSentCount} sent.");
             }
         }
 
@@ -272,7 +282,7 @@ namespace gRPC_Sender
                     { "client", "referer" },
                     { "referer", "http://localhost:8888"},
                     { "f", "json"},
-                    { "expiration", "21600"}
+                    { "expiration", EXPIRY.ToString()}
                 };
                 
                 var content = new FormUrlEncodedContent(values);
