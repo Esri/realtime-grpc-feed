@@ -26,7 +26,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Grpc.Net.Client;
-//using Esri.Realtime.Core.Grpc;
 using Google.Protobuf.WellKnownTypes;
 
 namespace gRPC_Sender
@@ -53,8 +52,7 @@ namespace gRPC_Sender
         private static string dateFormat = ConfigurationManager.AppSettings["dateFormat"];
         private static CultureInfo dateCulture = CultureInfo.CreateSpecificCulture(ConfigurationManager.AppSettings["dateCulture"]);
         private static long iterationLimit = Int64.Parse(ConfigurationManager.AppSettings["iterationLimit"]);
-
-        private const int EXPIRY = 21600; //the token expiry in minutes, when using ArcGIS authentication
+        private static int tokenExpiry = Int32.Parse(ConfigurationManager.AppSettings["tokenExpiry"]); 
 
                 
         static async Task Main()
@@ -282,7 +280,7 @@ namespace gRPC_Sender
                     { "client", "referer" },
                     { "referer", "http://localhost:8888"},
                     { "f", "json"},
-                    { "expiration", EXPIRY.ToString()}
+                    { "expiration", tokenExpiry.ToString()}
                 };
                 
                 var content = new FormUrlEncodedContent(values);
