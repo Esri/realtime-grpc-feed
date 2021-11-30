@@ -3,7 +3,7 @@ ArcGIS Velocity gRPC Feed Examples in Java
 
 These examples show how to construct Java clients for ArcGIS Velocity gRPC feeds.
 
-Additional documentation can be found [here](https://esriis-my.sharepoint.com/:w:/g/personal/eric5946_esri_com/EfEh5fDru4BNizLmNQKpyz0BR65yYNIG6irSMT3H7AR5Cw?e=INT0P7).
+Additional documentation can be found [here](https://github.com/Esri/realtime-grpc-feed/blob/main/doc/ArcGIS%20Velocity%20gRPC%20Client%20Developer%20Guide.pdf).
 
 # Building
 Open a command prompt on your machine and verify you have Java and Maven installed on your machine
