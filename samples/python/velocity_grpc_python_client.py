@@ -33,10 +33,10 @@ logging.basicConfig(level=logging.DEBUG)
 # the schema of the data sent to Velocity 
 SCHEMA = ['Float32', 'Float32', 'String', 'Boolean', 'Int32', 'Date']
 # path to the certificate file 
-PATH_TO_CER = 'ISRG Root X1.pem'
+PATH_TO_CER = ''
 # URL and header provided on the feed details page on Velocity 
-SERVER_URL = 'a4iot-a4iotdev-c2.westus2.cloudapp.azure.com'
-SERVER_HEARDER = 'a4iotdev.73fcb3514e82484bb850260e12d78b5a'
+SERVER_URL = ''
+SERVER_HEARDER = ''
 
 def data_collection():
     '''
