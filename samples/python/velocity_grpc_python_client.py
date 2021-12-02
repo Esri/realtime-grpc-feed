@@ -122,7 +122,7 @@ def send_blocking(stub, metadata, features):
     '''
     # send the request containing the feature we created
     for feature in features:
-        res = stub.send(request = velocity_grpc_pb2.Request(features=[feature]), metadata=metadata)
+        res = stub.Send(request = velocity_grpc_pb2.Request(features=[feature]), metadata=metadata)
         # print out the response '
         logging.info(res)
 
