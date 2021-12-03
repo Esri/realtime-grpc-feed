@@ -31,13 +31,13 @@ class GrpcFeedStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.stream = channel.stream_unary(
-                '/GrpcFeed/stream',
+        self.Stream = channel.stream_unary(
+                '/esri.realtime.core.grpc.GrpcFeed/Stream',
                 request_serializer=velocity__grpc__pb2.Request.SerializeToString,
                 response_deserializer=velocity__grpc__pb2.Response.FromString,
                 )
-        self.send = channel.unary_unary(
-                '/GrpcFeed/send',
+        self.Send = channel.unary_unary(
+                '/esri.realtime.core.grpc.GrpcFeed/Send',
                 request_serializer=velocity__grpc__pb2.Request.SerializeToString,
                 response_deserializer=velocity__grpc__pb2.Response.FromString,
                 )
@@ -46,14 +46,14 @@ class GrpcFeedStub(object):
 class GrpcFeedServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def stream(self, request_iterator, context):
+    def Stream(self, request_iterator, context):
         """client streaming rpc for high velocity
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def send(self, request, context):
+    def Send(self, request, context):
         """simple rpc for lower velocity
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -63,19 +63,19 @@ class GrpcFeedServicer(object):
 
 def add_GrpcFeedServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'stream': grpc.stream_unary_rpc_method_handler(
-                    servicer.stream,
+            'Stream': grpc.stream_unary_rpc_method_handler(
+                    servicer.Stream,
                     request_deserializer=velocity__grpc__pb2.Request.FromString,
                     response_serializer=velocity__grpc__pb2.Response.SerializeToString,
             ),
-            'send': grpc.unary_unary_rpc_method_handler(
-                    servicer.send,
+            'Send': grpc.unary_unary_rpc_method_handler(
+                    servicer.Send,
                     request_deserializer=velocity__grpc__pb2.Request.FromString,
                     response_serializer=velocity__grpc__pb2.Response.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'GrpcFeed', rpc_method_handlers)
+            'esri.realtime.core.grpc.GrpcFeed', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
@@ -84,7 +84,7 @@ class GrpcFeed(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def stream(request_iterator,
+    def Stream(request_iterator,
             target,
             options=(),
             channel_credentials=None,
@@ -94,14 +94,14 @@ class GrpcFeed(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.stream_unary(request_iterator, target, '/GrpcFeed/stream',
+        return grpc.experimental.stream_unary(request_iterator, target, '/esri.realtime.core.grpc.GrpcFeed/Stream',
             velocity__grpc__pb2.Request.SerializeToString,
             velocity__grpc__pb2.Response.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def send(request,
+    def Send(request,
             target,
             options=(),
             channel_credentials=None,
@@ -111,7 +111,7 @@ class GrpcFeed(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/GrpcFeed/send',
+        return grpc.experimental.unary_unary(request, target, '/esri.realtime.core.grpc.GrpcFeed/Send',
             velocity__grpc__pb2.Request.SerializeToString,
             velocity__grpc__pb2.Response.FromString,
             options, channel_credentials,
