@@ -76,7 +76,7 @@ foreach (var person in jsonData)
     request.Features.Add(feature);
 }
 
-var reply = await client.sendAsync(request, metadata);
+var reply = await client.SendAsync(request, metadata);
 
 
 
