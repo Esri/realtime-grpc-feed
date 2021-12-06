@@ -103,7 +103,7 @@ namespace gRPC_Sender
                 }  
 
                 if (streamData){
-                    call = grpcClient.stream(metadata);
+                    call = grpcClient.Stream(metadata);
                 }
 
                                 
@@ -180,7 +180,7 @@ namespace gRPC_Sender
                             try{
 
                                 if (!streamData){                                    
-                                    response = await grpcClient.sendAsync(request, metadata);
+                                    response = await grpcClient.SendAsync(request, metadata);
                                 }
                                 else{                                   
                                     await call.RequestStream.WriteAsync(request);
