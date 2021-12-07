@@ -16,9 +16,9 @@
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
-	
-  <ItemGroup>
-	  <Protobuf Include="Protos\velocity_grpc.proto" GrpcServices="Client" />
-  </ItemGroup>
+
+	<ItemGroup>
+		<Protobuf Include="Protos\velocity_grpc.proto" GrpcServices="Client"/>
+	</ItemGroup>
 
 </Project>

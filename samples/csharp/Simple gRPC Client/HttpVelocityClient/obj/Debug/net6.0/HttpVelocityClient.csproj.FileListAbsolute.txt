@@ -1,0 +1,17 @@
+C:\Users\keng4472\Source\Repos\realtime-grpc-feed\samples\csharp\Simple gRPC Client\HttpVelocityClient\bin\Debug\net6.0\HttpVelocityClient.exe
+C:\Users\keng4472\Source\Repos\realtime-grpc-feed\samples\csharp\Simple gRPC Client\HttpVelocityClient\bin\Debug\net6.0\HttpVelocityClient.deps.json
+C:\Users\keng4472\Source\Repos\realtime-grpc-feed\samples\csharp\Simple gRPC Client\HttpVelocityClient\bin\Debug\net6.0\HttpVelocityClient.runtimeconfig.json
+C:\Users\keng4472\Source\Repos\realtime-grpc-feed\samples\csharp\Simple gRPC Client\HttpVelocityClient\bin\Debug\net6.0\HttpVelocityClient.dll
+C:\Users\keng4472\Source\Repos\realtime-grpc-feed\samples\csharp\Simple gRPC Client\HttpVelocityClient\bin\Debug\net6.0\ref\HttpVelocityClient.dll
+C:\Users\keng4472\Source\Repos\realtime-grpc-feed\samples\csharp\Simple gRPC Client\HttpVelocityClient\bin\Debug\net6.0\HttpVelocityClient.pdb
+C:\Users\keng4472\Source\Repos\realtime-grpc-feed\samples\csharp\Simple gRPC Client\HttpVelocityClient\bin\Debug\net6.0\Newtonsoft.Json.dll
+C:\Users\keng4472\Source\Repos\realtime-grpc-feed\samples\csharp\Simple gRPC Client\HttpVelocityClient\obj\Debug\net6.0\HttpVelocityClient.csproj.AssemblyReference.cache
+C:\Users\keng4472\Source\Repos\realtime-grpc-feed\samples\csharp\Simple gRPC Client\HttpVelocityClient\obj\Debug\net6.0\HttpVelocityClient.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\keng4472\Source\Repos\realtime-grpc-feed\samples\csharp\Simple gRPC Client\HttpVelocityClient\obj\Debug\net6.0\HttpVelocityClient.AssemblyInfoInputs.cache
+C:\Users\keng4472\Source\Repos\realtime-grpc-feed\samples\csharp\Simple gRPC Client\HttpVelocityClient\obj\Debug\net6.0\HttpVelocityClient.AssemblyInfo.cs
+C:\Users\keng4472\Source\Repos\realtime-grpc-feed\samples\csharp\Simple gRPC Client\HttpVelocityClient\obj\Debug\net6.0\HttpVelocityClient.csproj.CoreCompileInputs.cache
+C:\Users\keng4472\Source\Repos\realtime-grpc-feed\samples\csharp\Simple gRPC Client\HttpVelocityClient\obj\Debug\net6.0\HttpVelocityClient.csproj.CopyComplete
+C:\Users\keng4472\Source\Repos\realtime-grpc-feed\samples\csharp\Simple gRPC Client\HttpVelocityClient\obj\Debug\net6.0\HttpVelocityClient.dll
+C:\Users\keng4472\Source\Repos\realtime-grpc-feed\samples\csharp\Simple gRPC Client\HttpVelocityClient\obj\Debug\net6.0\ref\HttpVelocityClient.dll
+C:\Users\keng4472\Source\Repos\realtime-grpc-feed\samples\csharp\Simple gRPC Client\HttpVelocityClient\obj\Debug\net6.0\HttpVelocityClient.pdb
+C:\Users\keng4472\Source\Repos\realtime-grpc-feed\samples\csharp\Simple gRPC Client\HttpVelocityClient\obj\Debug\net6.0\HttpVelocityClient.genruntimeconfig.cache

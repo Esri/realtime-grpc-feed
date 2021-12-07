@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrpcVelocityClient", "GrpcVelocityClient\GrpcVelocityClient.csproj", "{9164FA99-ED75-4AC5-9586-D31AE5BDCD8C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpVelocityClient", "HttpVelocityClient\HttpVelocityClient.csproj", "{D69376E2-1728-4A9E-834C-BFC52E5EA75E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{9164FA99-ED75-4AC5-9586-D31AE5BDCD8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9164FA99-ED75-4AC5-9586-D31AE5BDCD8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9164FA99-ED75-4AC5-9586-D31AE5BDCD8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D69376E2-1728-4A9E-834C-BFC52E5EA75E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D69376E2-1728-4A9E-834C-BFC52E5EA75E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D69376E2-1728-4A9E-834C-BFC52E5EA75E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D69376E2-1728-4A9E-834C-BFC52E5EA75E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

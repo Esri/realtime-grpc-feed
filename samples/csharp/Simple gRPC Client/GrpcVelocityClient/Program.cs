@@ -29,31 +29,22 @@ string gRPC_endpoint_URL = "";
 //gRPC endpoint header path	
 string gRPC_endpoint_header_path = "";
 
-//Authentication type
-AuthType auth_type = AuthType.None;
-
-//gRPC endpoint header path key
-string gRPC_endpoint_header_path_key = "grpc-path";
-
-//gRPC endpoint URL port; always 443
-int gRPC_endpoint_URL_port = 443;
-
 //data to send
 string jsonDataString = "[{\"lat\":39.29242438926388,\"lon\":-76.6666720609419,\"name\":\"Evan\",\"active\":false,\"id\":4,\"timestamp\":1636384539000},{\"lat\":38.905809,\"lon\":-77.091489,\"name\":\"Brody\",\"active\":true,\"id\":1,\"timestamp\":1636384599000},{\"lat\":38.580191,\"lon\":-77.421078,\"name\":\"Sarah\",\"active\":false,\"id\":2,\"timestamp\":1636384649000},{\"lat\":39.16077658089355,\"lon\":-77.3007033603238,\"name\":\"Cortney\",\"active\":true,\"id\":3,\"timestamp\":1636384709000}]";
 
 dynamic jsonData = JsonConvert.DeserializeObject<JArray>(jsonDataString);
 
-using var channel = GrpcChannel.ForAddress(String.Format("https://{0}:{1}", gRPC_endpoint_URL, gRPC_endpoint_URL_port));
+using var channel = GrpcChannel.ForAddress($"https://{gRPC_endpoint_URL}:443");
 var client = new GrpcFeed.GrpcFeedClient(channel);
 
 var metadata = new Grpc.Core.Metadata
 {
-    { gRPC_endpoint_header_path_key, gRPC_endpoint_header_path }
+    { "grpc=path", gRPC_endpoint_header_path }
 };
 
 
 Request request = new Request();
-Google.Protobuf.JsonParser parser = new Google.Protobuf.JsonParser(new Google.Protobuf.JsonParser.Settings(1));
+
 foreach (var person in jsonData)
 {
     Feature feature = new Feature();
@@ -83,8 +74,3 @@ var reply = await client.SendAsync(request, metadata);
 Console.WriteLine("Response: " + reply.Message);
 Console.WriteLine("Press any key to exit...");
 Console.ReadKey();
-enum AuthType
-{
-    None,
-    ArcGIS
-}

@@ -1,0 +1,16 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "9164fa99-ed75-4ac5-9586-d31ae5bdcd8c": {
+      "ProjectGuid": "9164fa99-ed75-4ac5-9586-d31ae5bdcd8c",
+      "DisplayName": "GrpcVelocityClient",
+      "ColorIndex": 0
+    },
+    "d69376e2-1728-4a9e-834c-bfc52e5ea75e": {
+      "ProjectGuid": "d69376e2-1728-4a9e-834c-bfc52e5ea75e",
+      "DisplayName": "HttpVelocityClient",
+      "ColorIndex": 1
+    }
+  },
+  "NextColorIndex": 2
+}
