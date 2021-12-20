@@ -1,16 +1,20 @@
 syntax = "proto3";
+package esri.realtime.core.grpc;
 
 import "google/protobuf/any.proto";
 
 option java_multiple_files = true;
 option java_package = "com.esri.realtime.core.grpc";
 option java_outer_classname = "GrpcProto";
+option csharp_namespace = "Esri.Realtime.Core.Grpc";
+option go_package = "esri/realtime/core/grpc";
+
 
 service GrpcFeed {
   // client streaming rpc for high velocity
-  rpc stream(stream Request) returns (Response);
+  rpc Stream(stream Request) returns (Response);
    // simple rpc for lower velocity
-  rpc send(Request) returns (Response);
+  rpc Send(Request) returns (Response);
 }
 
 // main api methods
