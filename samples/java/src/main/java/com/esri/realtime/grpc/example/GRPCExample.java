@@ -189,8 +189,8 @@ public class GRPCExample implements IGRPCExample
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("username", TOKEN_USERNAME));
         nvps.add(new BasicNameValuePair("password", TOKEN_PASSWORD));
-        nvps.add(new BasicNameValuePair("client", "ip"));
-        nvps.add(new BasicNameValuePair("ip", getPublicIP()));
+        nvps.add(new BasicNameValuePair("client", "referer"));
+        nvps.add(new BasicNameValuePair("referer", "http://" + getPublicIP()));
         nvps.add(new BasicNameValuePair("expiration", String.valueOf(TOKEN_MAX_AGE)));
         nvps.add(new BasicNameValuePair("f", "json"));
         httppost.setEntity(new UrlEncodedFormEntity(nvps));
