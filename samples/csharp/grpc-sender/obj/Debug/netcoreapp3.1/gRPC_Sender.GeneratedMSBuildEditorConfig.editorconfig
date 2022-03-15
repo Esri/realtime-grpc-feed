@@ -1,3 +1,3 @@
 is_global = true
 build_property.RootNamespace = gRPC_Sender
-build_property.ProjectDir = C:\Users\keng4472\Source\Repos\realtime-grpc-feed\samples\csharp\grpc-sender\
+build_property.ProjectDir = C:\Users\keng4472\source\repos\realtime-grpc-feed\samples\csharp\grpc-sender\

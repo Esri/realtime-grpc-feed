@@ -303,11 +303,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\keng4472\\Source\\Repos\\realtime-grpc-feed\\samples\\csharp\\Simple gRPC Client\\GrpcVelocityClient\\GrpcVelocityClient.csproj",
+      "projectUniqueName": "C:\\Users\\keng4472\\source\\repos\\realtime-grpc-feed\\samples\\csharp\\Simple gRPC Client\\GrpcVelocityClient\\GrpcVelocityClient.csproj",
       "projectName": "GrpcVelocityClient",
-      "projectPath": "C:\\Users\\keng4472\\Source\\Repos\\realtime-grpc-feed\\samples\\csharp\\Simple gRPC Client\\GrpcVelocityClient\\GrpcVelocityClient.csproj",
+      "projectPath": "C:\\Users\\keng4472\\source\\repos\\realtime-grpc-feed\\samples\\csharp\\Simple gRPC Client\\GrpcVelocityClient\\GrpcVelocityClient.csproj",
       "packagesPath": "C:\\Users\\keng4472\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\keng4472\\Source\\Repos\\realtime-grpc-feed\\samples\\csharp\\Simple gRPC Client\\GrpcVelocityClient\\obj\\",
+      "outputPath": "C:\\Users\\keng4472\\source\\repos\\realtime-grpc-feed\\samples\\csharp\\Simple gRPC Client\\GrpcVelocityClient\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
@@ -376,7 +376,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.102\\RuntimeIdentifierGraph.json"
       }
     }
   }

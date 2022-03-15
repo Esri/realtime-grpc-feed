@@ -1,0 +1,3 @@
+obj\Debug\netcoreapp3.1\Protos/VelocityGrpc.cs \
+obj\Debug\netcoreapp3.1\Protos/VelocityGrpcGrpc.cs: C:/Users/keng4472/.nuget/packages/grpc.tools/2.42.0/build/native/include/google/protobuf/any.proto\
+ Protos/velocity_grpc.proto

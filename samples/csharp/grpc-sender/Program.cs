@@ -311,10 +311,10 @@ namespace gRPC_Sender
                 Console.WriteLine(e.Data);
             }
             finally{
-                ////////if (streamData){
-                ////////    await call.RequestStream.CompleteAsync();
-                ////////    response = await call;
-                ////////}
+                if (streamData){
+                    await call.RequestStream.CompleteAsync();
+                    response = await call;
+                }
                 Console.WriteLine($"Completed. {totalFeaturesSentCount} sent.");
             }
         }
@@ -390,7 +390,6 @@ namespace gRPC_Sender
             {
 
                 string reqUrl = $"{velocityUrl}/iot/feed/{feedId}?f=json&token={userToken}";
-                //reqUrl = "https://us-iotqa.arcgis.com/a4iotqa/zScdue1WEby6HVNU/iot/feed/?token=_9zdyNGoDtPu2wF8ZtUXOS67pvnjTJtBYXrPzAD65MX00Mkx4Uzfa6DCSbFAZaUcO0yrA4HyLloP0f70EiN_Uc6BD8IaDQ4FzBEmkbcS_ZeC78uXCdDqXAk1pQalnpTjIEAD3tdu1QNqC3HiNO3okzTb0RHokm3szFXe4g-Q4aZUh_UCNsiwKdOmp2ur8dhLund_uBn_nVPl7M4bVTp-kUrAhtM1PwQrohTHMUNNmCU.";
                 var response = httpClient.GetAsync(reqUrl).Result;
                 var responseString = await response.Content.ReadAsStringAsync();
                 dynamic feedJson = JsonConvert.DeserializeObject(responseString);
