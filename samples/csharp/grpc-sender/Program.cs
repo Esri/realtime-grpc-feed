@@ -16,15 +16,19 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Grpc.Net.Client;
 using Google.Protobuf.WellKnownTypes;
 using Esri.Realtime.Core.Grpc;
@@ -36,8 +40,6 @@ namespace gRPC_Sender
         
         private static string gRPC_endpoint_URL = ConfigurationManager.AppSettings["gRPC_endpoint_URL"];
         private static string gRPC_endpoint_header_path = ConfigurationManager.AppSettings["gRPC_endpoint_header_path"];
-        private static string gRPC_endpoint_header_path_key = ConfigurationManager.AppSettings["gRPC_endpoint_header_path_key"];
-        private static int gRPC_endpoint_URL_port = Int32.Parse(ConfigurationManager.AppSettings["gRPC_endpoint_URL_port"]);
         private static bool streamData = Boolean.Parse(ConfigurationManager.AppSettings["streamData"]);
         private static bool authenticationArcGIS = Boolean.Parse(ConfigurationManager.AppSettings["authenticationArcGIS"]);
         private static string tokenPortalUrl = ConfigurationManager.AppSettings["tokenPortalUrl"];
@@ -48,87 +50,104 @@ namespace gRPC_Sender
         private static string fieldDelimiter = ConfigurationManager.AppSettings["fieldDelimiter"];
         private static int numLinesPerBatch = Int32.Parse(ConfigurationManager.AppSettings["numLinesPerBatch"]);
         private static long sendInterval = Int32.Parse(ConfigurationManager.AppSettings["sendInterval"]);
+        private static long iterationLimit = Int64.Parse(ConfigurationManager.AppSettings["iterationLimit"]);
+        private static long realRateMultiplier = Int64.Parse(ConfigurationManager.AppSettings["realRateMultiplier"]);
         private static int timeField = Int32.Parse(ConfigurationManager.AppSettings["timeField"]);
         private static bool setToCurrentTime = Boolean.Parse(ConfigurationManager.AppSettings["setToCurrentTime"]);
         private static string dateFormat = ConfigurationManager.AppSettings["dateFormat"];
         private static CultureInfo dateCulture = CultureInfo.CreateSpecificCulture(ConfigurationManager.AppSettings["dateCulture"]);
-        private static long iterationLimit = Int64.Parse(ConfigurationManager.AppSettings["iterationLimit"]);
         private static int tokenExpiry = Int32.Parse(ConfigurationManager.AppSettings["tokenExpiry"]); 
-
                 
         static async Task Main()
         {           
-            
+            //ReadCsvFile();
+            //return;
+
+            Console.WriteLine(gRPC_endpoint_URL);
+            Console.WriteLine(gRPC_endpoint_header_path);
+            Console.WriteLine(streamData);
+            Console.WriteLine(authenticationArcGIS);
+            Console.WriteLine(fileUrl);
+            Console.WriteLine(iterationLimit);
 
             Grpc.Core.AsyncClientStreamingCall<Request, Response> call = null;
             Request request = new Request();            
             Response response = new Response();
-            //string responseString;
 
+
+            using var channel = GrpcChannel.ForAddress($"https://{gRPC_endpoint_URL}:443");
+            var grpcClient = new GrpcFeed.GrpcFeedClient(channel); 
+
+            var metadata = new Grpc.Core.Metadata
+            {
+                { "grpc-path", gRPC_endpoint_header_path }
+            };
+
+            string token = await getTokenAsync(tokenPortalUrl,username,password);                     
+            if (authenticationArcGIS){
+                if (token == "")
+                    return;
+                metadata.Add("authorization", $"Bearer {token}");                    
+            }  
+
+            if (streamData){
+                call = grpcClient.Stream(metadata);
+            }
+            string feedId = gRPC_endpoint_header_path.Split(".").Last();
+            string velocityApiUrl = await getVelocityApiEndpointAsync(tokenPortalUrl, token: token, username: "", password:"");
+            JObject feedSchema = await getFeedSchemaAsync(velocityApiUrl,feedId,token);
+            
+            numLinesPerBatch = sendInterval == -1 ? 1 : numLinesPerBatch;
             int featuresInBatchCount = 0;
             int totalFeaturesSentCount = 0;
             
-            double maxIterations = iterationLimit;            
+            double maxIterations =  double.PositiveInfinity;        //iterationLimit;    
             if(iterationLimit < 1) 
                 maxIterations = double.PositiveInfinity;
 
-            int iterationCount = 0;
-
-            string line;
+            int iterationCount = 0;            
             DateTime batchStartTime = DateTime.MinValue;
+
+
+            DateTime previousLineDateTime = DateTime.MinValue;
+            DateTime currentLineDateTime = DateTime.MinValue;
+            bool hasCurrentDate = false;
+            long waitTime = -1;
+            string timeString;
+            long timeUnix;
+
 
             try
             {
-                string[] contentArray = readFile();
+                
+                string[] contentArray = await readFile(fileUrl);
+                
+                JArray fieldArray = (JArray)feedSchema["schema"];
+                
+                
                 if (hasHeaderRow){
                     contentArray = contentArray.Where((source, index) => index != 0).ToArray();
                 }
                 int lineCount = contentArray.Length;
-
-
-
-                using var channel = GrpcChannel.ForAddress(String.Format("https://{0}:{1}", gRPC_endpoint_URL, gRPC_endpoint_URL_port));
-                var grpcClient = new GrpcFeed.GrpcFeedClient(channel); 
-
-                var metadata = new Grpc.Core.Metadata
-                {
-                    { gRPC_endpoint_header_path_key, gRPC_endpoint_header_path }
-                };
-
-                if (authenticationArcGIS){
-                    string token = await getToken(tokenPortalUrl,username,password);                     
-                    if (token == "")
-                        return;
-                    metadata.Add("authorization", $"Bearer {token}");                    
-                }  
-
-                if (streamData){
-                    call = grpcClient.Stream(metadata);
-                }
-
                                 
                 while (iterationCount < maxIterations)
                 {
-                    for (int l = 0; l < lineCount; l++)
-                    {                        
-                        line = contentArray[l];
-                        if (String.IsNullOrEmpty(line)){
-                            continue;
-                        }
-
-                        
+                    foreach (string line in contentArray)
+                    { 
                         if (request.Features.Count == 0)  
                             batchStartTime = DateTime.UtcNow;
+                        string[] values = Regex.Split(line, $"{fieldDelimiter}(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+
                         
-                        
-                        dynamic[] values = line.Split(fieldDelimiter);
-                        
+                        //replace the time value of the line with the current time
                         if (setToCurrentTime)
                         {
                             if (String.IsNullOrEmpty(dateFormat))
                             {
+                                //Console.WriteLine("setting time value");
                                 string dt = new DateTimeOffset(DateTime.Now).ToUnixTimeMilliseconds().ToString();
                                 values[timeField] = dt;
+                                //Console.WriteLine("done setting time value");
                             }
                             else
                             {
@@ -143,35 +162,68 @@ namespace gRPC_Sender
                             }
                         }
 
-                     
+
+
+                        //create the gRPC feature and add attributes from the line
                         Feature feature = new Feature();
 
-                        foreach (var value in values)
-                        {        
-                            long longVal = 0;
-                            double flVal = 0;
-                            bool boolVal = false;
-                            bool isLong = long.TryParse(value, out longVal);
-                            bool isFloat = double.TryParse(value, out flVal);
-                            bool isBool = Boolean.TryParse(value, out boolVal);
-                            
-                            if (isBool)
-                                feature.Attributes.Add(Any.Pack(new BoolValue() { Value = boolVal }));
-                            else if ( isLong )
-                                feature.Attributes.Add(Any.Pack(new Int64Value() { Value = longVal }));
-                            else if (isFloat)           
-                                feature.Attributes.Add(Any.Pack(new DoubleValue() { Value = flVal }));
-                            else
-                                feature.Attributes.Add(Any.Pack(new StringValue() { Value = value }));
+                        bool boolVal = false;
+                        float floatVal = 0;
+                        double doubleVal = 0;
+                        Int32 intVal = 0;
+                        long longVal = 0;
 
-                        }    
+                        for (var v = 0; v < values.Length; v++)
+                        {
+                            string value = values[v];
+                            var fieldType = (string)fieldArray[v]["dataType"];
+
+                            if (fieldType == "Boolean" & bool.TryParse(value, out boolVal))
+                            {
+                                feature.Attributes.Add(Any.Pack(new BoolValue() { Value = Boolean.TryParse(value, out boolVal) }));
+                            }
+                            else if (fieldType == "Date")
+                            {
+                                if (long.TryParse(value, out longVal))
+                                {
+                                    feature.Attributes.Add(Any.Pack(new Int64Value() { Value = longVal }));
+                                }
+                                else
+                                {
+                                    feature.Attributes.Add(Any.Pack(new StringValue() { Value = value }));
+                                }
+
+                            }
+                            else if (fieldType == "Float32" & float.TryParse(value, out floatVal))
+                            {
+                                feature.Attributes.Add(Any.Pack(new FloatValue() { Value = floatVal }));
+                            }
+                            else if (fieldType == "Float64" & double.TryParse(value, out doubleVal))
+                            {
+                                feature.Attributes.Add(Any.Pack(new DoubleValue() { Value = doubleVal }));
+                            }
+                            else if (fieldType == "Int32" & int.TryParse(value, out intVal))
+                            {
+                                feature.Attributes.Add(Any.Pack(new Int32Value() { Value = intVal }));
+                            }
+                            else if (fieldType == "Int64" & long.TryParse(value, out longVal))
+                            {
+                                feature.Attributes.Add(Any.Pack(new Int64Value() { Value = longVal }));
+                            }
+                            else if (fieldType == "String")
+                            {
+                                feature.Attributes.Add(Any.Pack(new StringValue() { Value = value }));
+                            }
+
+                        }  
 
                         request.Features.Add(feature);                  
                         
                         featuresInBatchCount++;
                         totalFeaturesSentCount++;
+                        
 
-
+                        //sending or streaming the gRPC Request
                         if (featuresInBatchCount == numLinesPerBatch || totalFeaturesSentCount == lineCount)
                         {                           
                             // send the batch of events to the gRPC receiver                           
@@ -184,21 +236,16 @@ namespace gRPC_Sender
                                 }
                                 else{                                   
                                     await call.RequestStream.WriteAsync(request);
-                                } 
-
-                                long elapsedTime = Convert.ToInt64((DateTime.UtcNow - batchStartTime).TotalMilliseconds);   
-                                if (elapsedTime < sendInterval){                               
-                                    Thread.Sleep((int)(sendInterval - elapsedTime));
-                                }
-                                
+                                }                                 
+                                Console.WriteLine($"A gRPC Request containing {numLinesPerBatch} feature has been sent. Total sent: {totalFeaturesSentCount}.\n" );
                             }
                             catch(Grpc.Core.RpcException rpcEx){
                                  if (rpcEx.StatusCode == Grpc.Core.StatusCode.PermissionDenied && authenticationArcGIS){ 
-                                    string token = await getToken(tokenPortalUrl,username,password);                     
+                                    token = await getTokenAsync(tokenPortalUrl,username,password);                     
                                     if (token == "")
                                         return;                              
                                     metadata[1] = new Grpc.Core.Metadata.Entry("authorization", $"Bearer {token}");
-                                    response = await grpcClient.sendAsync(request, metadata);      
+                                    response = await grpcClient.SendAsync(request, metadata);      
                                  }
                             }
                             catch (Exception e){
@@ -207,6 +254,41 @@ namespace gRPC_Sender
                                 Console.WriteLine(e.Data);
                             }
                             finally{
+                                //implement the configured time delay
+                                //for real rate (sendInterval == -1) it will use the values in the timeField and wait the same
+                                //amount of time (or a proportion thereof depending on the value of realRateMultiplier)
+                                //otherwise wait the duration of sendInterval minus the time that has already elapsed
+                                if (sendInterval == -1)
+                                {
+                                    timeString = values[timeField];
+                                    hasCurrentDate = false;
+
+                                    if (long.TryParse(timeString, out timeUnix))
+                                    {
+                                        currentLineDateTime = timeString.Length == 10 ? DateTimeOffset.FromUnixTimeSeconds(timeUnix).DateTime : DateTimeOffset.FromUnixTimeMilliseconds(timeUnix).DateTime;
+                                        hasCurrentDate = true;
+                                    }
+                                    else
+                                    {
+                                        hasCurrentDate = DateTime.TryParse(timeString, out currentLineDateTime);
+                                    }
+
+                                    if (hasCurrentDate && previousLineDateTime != DateTime.MinValue && currentLineDateTime > previousLineDateTime)
+                                    {
+                                        waitTime = Convert.ToInt64((currentLineDateTime - previousLineDateTime).TotalMilliseconds);
+                                        Thread.Sleep((int)(waitTime / (realRateMultiplier / 100)));
+                                    }
+                                    if (hasCurrentDate)
+                                    {
+                                        previousLineDateTime = currentLineDateTime;
+                                    }
+                                }
+                                else{
+                                    long elapsedTime = Convert.ToInt64((DateTime.UtcNow - batchStartTime).TotalMilliseconds);   
+                                    if (elapsedTime < sendInterval){                               
+                                        Thread.Sleep((int)(sendInterval - elapsedTime));
+                                    }
+                                }
                                 request.Features.Clear();
                                 featuresInBatchCount = 0;
                             }                           
@@ -229,29 +311,24 @@ namespace gRPC_Sender
                 Console.WriteLine(e.Data);
             }
             finally{
-                if (streamData){
-                    await call.RequestStream.CompleteAsync();
-                    response = await call;
-                }
+                ////////if (streamData){
+                ////////    await call.RequestStream.CompleteAsync();
+                ////////    response = await call;
+                ////////}
                 Console.WriteLine($"Completed. {totalFeaturesSentCount} sent.");
             }
         }
 
-        static string[] readFile(){
+        static async Task<string[]> readFile(string fileUrl){
 
             Console.WriteLine($"Fetching and reading file: {fileUrl}");
-
             HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(fileUrl);
-            // Sends the HttpWebRequest and waits for the response.			
             HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-            // Gets the stream associated with the response.
             Stream receiveStream = myHttpWebResponse.GetResponseStream();
-            Encoding encode = System.Text.Encoding.GetEncoding("utf-8");
-            // Pipes the stream to a higher level stream reader with the required encoding format. 
+            Encoding encode = System.Text.Encoding.GetEncoding("utf-8"); 
             StreamReader readStream = new StreamReader(receiveStream, encode);
-            
-            
 
+            
             // Read lines from the file until the end of 
             // the file is reached.
             string[] contentArray = readStream.ReadToEnd().Replace("\r", "").Split('\n');
@@ -262,7 +339,7 @@ namespace gRPC_Sender
 
         }
 
-        static async Task<string> getToken(string url, string user, string pass)
+        static async Task<string> getTokenAsync(string url, string user, string pass)
         {               
                 
             Console.WriteLine("Fetching a new token");
@@ -298,5 +375,124 @@ namespace gRPC_Sender
                 return "";
             }
         }
-    }
+    
+         static async Task<JObject> getFeedSchemaAsync(string velocityUrl, string  feedId,string userToken)
+        {
+
+            
+            HttpClient httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "*/*");
+            httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Referer", "http://localhost:8888");
+            httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"token={userToken}");
+            httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json; charset=utf-8");
+
+            try
+            {
+
+                string reqUrl = $"{velocityUrl}/iot/feed/{feedId}?f=json&token={userToken}";
+                //reqUrl = "https://us-iotqa.arcgis.com/a4iotqa/zScdue1WEby6HVNU/iot/feed/?token=_9zdyNGoDtPu2wF8ZtUXOS67pvnjTJtBYXrPzAD65MX00Mkx4Uzfa6DCSbFAZaUcO0yrA4HyLloP0f70EiN_Uc6BD8IaDQ4FzBEmkbcS_ZeC78uXCdDqXAk1pQalnpTjIEAD3tdu1QNqC3HiNO3okzTb0RHokm3szFXe4g-Q4aZUh_UCNsiwKdOmp2ur8dhLund_uBn_nVPl7M4bVTp-kUrAhtM1PwQrohTHMUNNmCU.";
+                var response = httpClient.GetAsync(reqUrl).Result;
+                var responseString = await response.Content.ReadAsStringAsync();
+                dynamic feedJson = JsonConvert.DeserializeObject(responseString);
+                
+                string feedDefName = (string)feedJson["feed"]["name"];                    
+                //{
+                string label = (string)feedJson["label"];
+                JToken schema = (JToken)feedJson["feed"]["schemaTransformation"]["inputSchema"]["attributes"];
+
+                JObject feedValue = new JObject();
+                feedValue.Add("label", label);
+                feedValue.Add("itemId", (string)feedJson["id"]);
+                JToken propBag = feedJson["feed"]["properties"];
+
+                if (feedDefName == "azure-event-hub" || feedDefName == "azure-service-bus")
+                {
+                    feedValue.Add("endpoint", (string)propBag[$"{feedDefName}.endpoint"]);
+                    string entityPath = feedDefName == "azure-event-hub" ? (string)propBag[$"{feedDefName}.entityPath"] : (string)propBag[$"{feedDefName}.topicName"];
+                    feedValue.Add("entityPath", entityPath);
+                    feedValue.Add("sharedAccessKeyName", (string)propBag[$"{feedDefName}.sharedAccessKeyName"]);
+                    feedValue.Add("format", (string)feedJson["feed"]["formatName"]);
+                }
+                
+                else if (feedDefName == "kinetic" || feedDefName == "mqtt")
+                {
+                    feedValue.Add("host", (string)propBag[$"{feedDefName}.host"]);
+                    feedValue.Add("clientid", (string)propBag[$"{feedDefName}.clientid"]);
+                    feedValue.Add("qos", (string)propBag[$"{feedDefName}.qos"]);
+                    feedValue.Add("port", (string)propBag[$"{feedDefName}.port"]);
+                    feedValue.Add("topic", (string)propBag[$"{feedDefName}.topic"]);
+                    feedValue.Add("username", (string)propBag[$"{feedDefName}.username"]);
+                    feedValue.Add("format", (string)feedJson["feed"]["formatName"]);
+                }
+                else if (feedDefName == "grpc")
+                {
+                    feedValue.Add("url", (string)propBag["grpc.url"]);
+                    feedValue.Add("headerPath", (string)propBag["grpc.headerPath"]);
+                    feedValue.Add("authType", (string)propBag["grpc.authenticationType"]);
+                }
+                else if (feedDefName == "http-receiver")
+                {
+                    feedValue.Add("url", (string)propBag["http-receiver.url"]);
+                    feedValue.Add("authType", (string)propBag["http-receiver.httpAuthenticationType"]);
+                    feedValue.Add("format", (string)feedJson["feed"]["formatName"]);
+                }
+                feedValue.Add("schema", schema);
+
+
+                return feedValue;
+            }
+            catch (Exception e)
+            {
+                Console.Out.WriteLine("getToken Error: " + e.Message);
+                return null;
+            }
+
+        }
+    
+        static async Task<string> getVelocityApiEndpointAsync(string tokenPortalUrl, string token, string username, string password)
+        {
+            if (string.IsNullOrWhiteSpace(token)){
+                if ((string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))){                
+                    return "Could not obtain the Velocity API url.";
+                }
+                token = await getTokenAsync(tokenPortalUrl, username, password);
+            }
+
+            Console.WriteLine("Fetching subscription info");
+
+            
+            HttpClient httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "application/json");
+            httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json; charset=utf-8");
+
+            try
+            {
+                string reqUrl = $"{tokenPortalUrl}/sharing/rest/portals/self/subscriptionInfo?f=json&token={token}&client=referer&referer=http://localhost:8888";
+                var response = httpClient.GetAsync(reqUrl).Result;
+                string responseString = response.Content.ReadAsStringAsync().Result;
+                dynamic subscriptionInfo = JsonConvert.DeserializeObject(responseString);
+                JObject error = subscriptionInfo["error"];
+                if (error == null)
+                {
+                    JArray orgCapabilities = subscriptionInfo["orgCapabilities"];
+                    foreach (JObject orgCapability in orgCapabilities)
+                    {
+                        if ((string)orgCapability["id"] == "velocity")
+                        {
+                            return (string)orgCapability["velocityUrl"];
+                            //break;
+                        }
+                    }
+                }
+                //return "https://us-iotdev.arcgis.com/a4iotdev/cqvgkj9zrnkn9bcu";
+                return "There was an error retrieving your organization capabilities. Ensure your organization is licensed for Velocity.";
+            }
+            catch (Exception e)
+            {
+                Console.Out.WriteLine("getToken Error: " + e.Message);
+                return e.Message;
+            }
+
+        }
+    } 
 }

@@ -1,7 +1,11 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\samples",
+    "\\samples\\csharp",
+    "\\samples\\csharp\\Simple gRPC Client",
+    "\\samples\\csharp\\Simple gRPC Client\\GrpcVelocityClient"
   ],
-  "SelectedNode": "\\GrpcVelocityClient.sln",
+  "SelectedNode": "\\samples\\csharp\\Simple gRPC Client\\GrpcVelocityClient\\Program.cs",
   "PreviewInSolutionExplorer": false
 }

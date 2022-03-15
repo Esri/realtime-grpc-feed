@@ -33,10 +33,10 @@ logging.basicConfig(level=logging.DEBUG)
 # the schema of the data sent to Velocity 
 SCHEMA = ['Float32', 'Float32', 'String', 'Boolean', 'Int32', 'Date']
 # path to the certificate file 
-PATH_TO_CER = ''
+PATH_TO_CER = 'C:\\Users\\keng4472\\Downloads\\isrgrootx1.pem'
 # URL and header provided on the feed details page on Velocity 
-SERVER_URL = ''
-SERVER_HEARDER = ''
+SERVER_URL = 'velocitydemo.arcgis.com:443'
+SERVER_HEARDER = 'bc1qjuyagnrebxvh.90ae5461da044d60a9856ac2f17fa89f'
 
 def data_collection():
     '''
