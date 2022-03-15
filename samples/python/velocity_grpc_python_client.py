@@ -103,11 +103,12 @@ def create_channel():
     '''
     Create the channel to send data 
     '''
-    # read the root certificate from file
-    # the certificate can be obtained from https://letsencrypt.org/certificates/
+    # read the ISRG Root X1 certificate from file
+    # the certificate can be obtained from https://letsencrypt.org/certificates/ 
+    # or exported from browser when you go the gRPC endpoint URL
     with open(PATH_TO_CER, 'rb') as f:
         trusted_certs = f.read()
-    # create credentials for the channel based on the root certificate 
+    # create credentials for the channel based on the certificate 
     creds = grpc.ssl_channel_credentials(root_certificates=trusted_certs)
 
     # create the channel using the gRPC endpoint URL
