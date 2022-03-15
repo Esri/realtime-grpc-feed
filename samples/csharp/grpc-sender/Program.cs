@@ -311,10 +311,10 @@ namespace gRPC_Sender
                 Console.WriteLine(e.Data);
             }
             finally{
-                ////////if (streamData){
-                ////////    await call.RequestStream.CompleteAsync();
-                ////////    response = await call;
-                ////////}
+                if (streamData){
+                    await call.RequestStream.CompleteAsync();
+                    response = await call;
+                }
                 Console.WriteLine($"Completed. {totalFeaturesSentCount} sent.");
             }
         }
