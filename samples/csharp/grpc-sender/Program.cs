@@ -180,7 +180,7 @@ namespace gRPC_Sender
 
                             if (fieldType == "Boolean" & bool.TryParse(value, out boolVal))
                             {
-                                feature.Attributes.Add(Any.Pack(new BoolValue() { Value = Boolean.TryParse(value, out boolVal) }));
+                                feature.Attributes.Add(Any.Pack(new BoolValue() { Value = boolVal }));
                             }
                             else if (fieldType == "Date")
                             {
